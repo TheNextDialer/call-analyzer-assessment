@@ -1,0 +1,17 @@
+[
+  { "speaker": "system", "text": "Thank you for calling Acme Corporation. Your call is important to us. Please hold while I transfer you to the requested extension.", "startMs": 500, "endMs": 7500 },
+  { "speaker": "silence", "text": "", "startMs": 7500, "endMs": 12000 },
+  { "speaker": "system", "text": "Transferring now.", "startMs": 12000, "endMs": 13500 },
+  { "speaker": "silence", "text": "", "startMs": 13500, "endMs": 16000 },
+  { "speaker": "prospect", "text": "This is John.", "startMs": 16000, "endMs": 17200 },
+  { "speaker": "rep", "text": "Hey John, this is Sarah from PhoneBurner. How's it going?", "startMs": 17500, "endMs": 20500 },
+  { "speaker": "prospect", "text": "Good, what can I do for you?", "startMs": 20800, "endMs": 22500 },
+  { "speaker": "rep", "text": "I'm reaching out because I saw your team is growing the outbound sales org. We make a power dialer that helps reps make 4x more calls per hour. Is that something you'd want to hear about?", "startMs": 22800, "endMs": 32000 },
+  { "speaker": "prospect", "text": "Actually yeah, we've been looking at dialers. What would the next steps look like to get a demo set up?", "startMs": 32300, "endMs": 37000 },
+  { "speaker": "rep", "text": "So our platform integrates with most CRMs out of the box. We support Salesforce, HubSpot, Zoho, and about 20 others. The setup typically takes less than a day.", "startMs": 37200, "endMs": 45000 },
+  { "speaker": "prospect", "text": "Okay but how much does it cost? We have about 30 reps.", "startMs": 45200, "endMs": 48500 },
+  { "speaker": "rep", "text": "For a team of 30, you'd be looking at our Professional tier. I can put together a custom quote. Let me get your email and I'll send over everything.", "startMs": 48800, "endMs": 55000 },
+  { "speaker": "prospect", "text": "Sure, it's john at acme dot com.", "startMs": 55200, "endMs": 57500 },
+  { "speaker": "rep", "text": "Perfect. I'll have that over to you by end of day. Thanks John.", "startMs": 57800, "endMs": 61000 },
+  { "speaker": "prospect", "text": "Thanks, talk soon.", "startMs": 61200, "endMs": 62500 }
+]

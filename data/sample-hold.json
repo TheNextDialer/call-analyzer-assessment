@@ -1,0 +1,17 @@
+[
+  { "speaker": "rep", "text": "Hi, this is Sarah from PhoneBurner. Is this Mike?", "startMs": 1000, "endMs": 4000 },
+  { "speaker": "prospect", "text": "Yeah, hi Sarah.", "startMs": 4200, "endMs": 5500 },
+  { "speaker": "rep", "text": "Great! I'm calling because we noticed your company recently posted several SDR positions. We help sales teams dial faster and have more conversations. Do you have a couple minutes?", "startMs": 5800, "endMs": 15000 },
+  { "speaker": "prospect", "text": "Sure, but can you hold on one sec? I need to grab something.", "startMs": 15300, "endMs": 18000 },
+  { "speaker": "rep", "text": "Of course, take your time.", "startMs": 18200, "endMs": 19800 },
+  { "speaker": "silence", "text": "", "startMs": 19800, "endMs": 139800 },
+  { "speaker": "prospect", "text": "Okay I'm back, sorry about that. Go ahead.", "startMs": 140000, "endMs": 142500 },
+  { "speaker": "rep", "text": "No problem! So the quick version is — PhoneBurner lets your reps make up to 80 calls per hour with zero connection delay. We do local presence dialing so your pickup rates go way up. Most teams see a 3 to 4x increase in live conversations.", "startMs": 142800, "endMs": 158000 },
+  { "speaker": "prospect", "text": "That's interesting. We're currently using a basic auto-dialer but the connection quality isn't great.", "startMs": 158300, "endMs": 163000 },
+  { "speaker": "rep", "text": "Yeah, that's really common. The difference with us is we're not a VoIP dialer — we use carrier-grade connections. Your reps sound like they're calling from a regular phone. Would it be helpful if I set up a demo with your sales manager?", "startMs": 163200, "endMs": 176000 },
+  { "speaker": "prospect", "text": "Yeah, let me check with my team and get back to you. Can you send me some info?", "startMs": 176300, "endMs": 180500 },
+  { "speaker": "rep", "text": "Absolutely. I'll send over a case study and a link to book a demo. What's the best email?", "startMs": 180800, "endMs": 186000 },
+  { "speaker": "prospect", "text": "Mike at techstartup dot io.", "startMs": 186200, "endMs": 188500 },
+  { "speaker": "rep", "text": "Got it. Thanks Mike, talk soon.", "startMs": 188800, "endMs": 191000 },
+  { "speaker": "prospect", "text": "Thanks, bye.", "startMs": 191200, "endMs": 192500 }
+]

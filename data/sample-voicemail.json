@@ -1,0 +1,5 @@
+[
+  { "speaker": "prospect", "text": "Hi, you've reached John Smith at Acme Corporation. I'm not available right now. Please leave a message after the beep and I'll return your call as soon as possible. Thank you.", "startMs": 800, "endMs": 10200 },
+  { "speaker": "silence", "text": "", "startMs": 10200, "endMs": 12000 },
+  { "speaker": "rep", "text": "Hi John, this is Sarah from PhoneBurner. I was calling to follow up on the email I sent about our power dialer platform. Give me a call back when you get a chance at 555-0199. Thanks!", "startMs": 12000, "endMs": 22500 }
+]
