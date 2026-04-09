@@ -44,12 +44,15 @@ function scoreCall({
     talkRatioScore = Math.max(0, 100 - (repPct - 60) * 2.5);
   }
 
-  // Coaching: start at 100, deduct for issues
-  let coachingScore = 100 - (missedSignals * 15) - (monologues * 10);
+  // Coaching: start at 100, deduct for issues, clamp to zero
+  let coachingScore = Math.max(0, 100 - (missedSignals * 15) - (monologues * 10));
 
-  // Duration: reward calls that are close to the target length.
-  // Longer calls that go over the target are fine up to the cap.
-  const durationScore = Math.min(durationMs / targetDurationMs, 1.0) * 100;
+  // Duration: tent function centered on target duration.
+  // Penalize both under and over the target.
+  const ratio = durationMs / targetDurationMs;
+  const durationScore = ratio <= 1.0
+    ? ratio * 100
+    : Math.max(0, 100 - (ratio - 1.0) * 50);
 
   // Disposition: CONVERSATION is ideal
   let dispositionScore = 0;

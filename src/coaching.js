@@ -41,11 +41,6 @@ function detectCoachingMoments(transcript) {
     const turn = turns[i];
     if (turn.speaker !== 'prospect') continue;
 
-    // Skip questions — only check statements for buying signals
-    if (containsQuestion(turn.text)) {
-      continue;
-    }
-
     const { found, signal } = detectBuyingSignal(turn.text);
     if (!found) continue;
 
@@ -55,7 +50,7 @@ function detectCoachingMoments(transcript) {
       const repResponse = nextRepTurn.text.toLowerCase();
       const acknowledged =
         repResponse.includes(signal) ||
-        repResponse.includes('great') ||
+        /^\s*great\b/.test(repResponse) ||
         repResponse.includes('absolutely') ||
         repResponse.includes('glad') ||
         repResponse.includes('perfect') ||

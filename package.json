@@ -5,6 +5,7 @@
   "main": "src/analyzer.js",
   "scripts": {
     "test": "node test/run.js",
+    "probe": "node tools/probe.js",
     "analyze": "node src/cli.js data/sample-live.json"
   },
   "keywords": ["sales", "telephony", "coaching", "amd"],

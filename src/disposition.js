@@ -28,8 +28,8 @@
  */
 function mapDisposition({ outcome, durationMs, prospectUtterances, vmToneDurationMs }) {
   if (outcome === 'connected') {
-    // Fewer than 3 prospect utterances and under 60s is a brief contact
-    if (prospectUtterances < 3 && durationMs < 60000) {
+    // 3 or fewer prospect utterances and under 60s is a brief contact
+    if (prospectUtterances <= 3 && durationMs < 60000) {
       return 'BRIEF_CONTACT';
     }
     return 'CONVERSATION';
@@ -37,7 +37,9 @@ function mapDisposition({ outcome, durationMs, prospectUtterances, vmToneDuratio
 
   if (outcome === 'voicemail_left' || outcome === 'voicemail_skip') {
     // Long voicemails indicate the rep left a detailed message
-    if (durationMs > 20000) {
+    // Use vmToneDurationMs when available, otherwise fall back to durationMs
+    const vmDuration = vmToneDurationMs != null ? vmToneDurationMs : durationMs;
+    if (vmDuration > 20000) {
       return 'VM_DETAILED';
     }
     return 'VM_BRIEF';

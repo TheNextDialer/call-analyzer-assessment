@@ -31,11 +31,14 @@ function analyzeTalkRatio(transcript) {
   const systemDuration = getSpeakerDuration(transcript, 'system');
   const silenceDuration = getSpeakerDuration(transcript, 'silence');
 
-  // Use total call duration for all percentage calculations
+  // Use total call duration for silence percentage
   const totalDuration = getCallDuration(transcript);
 
-  const repPct = totalDuration > 0 ? Math.round((repDuration / totalDuration) * 100) : 0;
-  const prospectPct = totalDuration > 0 ? Math.round((prospectDuration / totalDuration) * 100) : 0;
+  // Use speech-only time for rep/prospect percentages (excluding silence and hold)
+  const speechDuration = repDuration + prospectDuration;
+
+  const repPct = speechDuration > 0 ? Math.round((repDuration / speechDuration) * 100) : 0;
+  const prospectPct = speechDuration > 0 ? Math.round((prospectDuration / speechDuration) * 100) : 0;
   const silencePct = totalDuration > 0 ? Math.round(((silenceDuration + systemDuration) / totalDuration) * 100) : 0;
 
   // Rating based on rep talk percentage

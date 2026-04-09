@@ -42,9 +42,9 @@ function mergeOverlappingUtterances(transcript) {
 
   for (let i = 1; i < sorted.length; i++) {
     const prev = merged[merged.length - 1];
-    // Merge if the current utterance overlaps or is adjacent to the previous one.
-    // Two utterances overlap when the current one starts before the previous ends.
-    if (sorted[i].startMs <= prev.endMs) {
+    // Merge only same-speaker overlapping or adjacent utterances.
+    // Cross-speaker overlaps should be preserved to maintain speaker attribution.
+    if (sorted[i].speaker === prev.speaker && sorted[i].startMs <= prev.endMs) {
       prev.endMs = Math.max(prev.endMs, sorted[i].endMs);
       prev.text = prev.text ? prev.text + ' ' + sorted[i].text : sorted[i].text;
     } else {

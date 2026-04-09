@@ -1,78 +1,73 @@
 # PhoneBurner Call Analyzer
 
-A Node.js service that analyzes sales call data to help reps improve their performance. Used internally by PhoneBurner's coaching and analytics team.
+A Node.js service that analyzes sales call data. Used internally by PhoneBurner's coaching and analytics team.
 
 ## What It Does
 
-This service processes call data and produces three analyses:
-
-1. **Call Outcome Classification** — After a call ends, determines whether it was a connected conversation, voicemail (left or skipped), no answer, busy, or wrong number. Uses SIP codes, call duration, hardware AMD results, and audio analysis. Accurate classification is critical — bad data means bad reporting for sales managers.
-
-2. **Talk Ratio Analysis** — Measures how much the sales rep talked vs. listened using the call transcript. Top-performing reps typically maintain a 40/60 talk-to-listen ratio. Flags calls where the rep dominated the conversation.
-
-3. **Coaching Detector** — Identifies specific coachable moments in call transcripts: when the rep monologued too long without asking a question, when the prospect gave a buying signal that the rep didn't follow up on, and when the rep interrupted the prospect.
-
-## The Problem
-
-QA has flagged several issues with open bug reports:
-
-- **Bug #1247**: "Short calls are being classified as 'no_answer' even when the prospect clearly picked up and spoke. Had a 15-second call where the prospect said 'not interested, take me off your list' and it shows up as no_answer in reporting."
-
-- **Bug #1251**: "Talk ratio numbers seem wrong on calls with any silence or dead air. One call had a 2-minute hold in the middle and the report said the rep only talked 26% of the time, which doesn't match what actually happened in the conversation."
-
-- **Bug #1255**: "The coaching detector is missing obvious buying signals. A prospect literally asked 'what would the next steps look like?' and it wasn't flagged as a buying signal."
-
-The test suite has tests that are currently failing. Your job is to find the bugs, fix them, and make all tests pass.
+- **Call Outcome Classification** — Classifies calls as connected, voicemail, no answer, busy, or wrong number
+- **Talk Ratio Analysis** — Measures rep vs. prospect talk time
+- **Coaching Detector** — Identifies monologues, missed buying signals, and interruptions
+- **CRM Disposition Mapping** — Maps outcomes to standardized CRM codes
+- **Call Quality Scoring** — Composite quality score (0-100)
+- **Summary Generator** — One-line call summaries for activity feeds
 
 ## Quick Start
 
 ```bash
 npm install
-npm test        # Run the test suite — you'll see failures
-npm run analyze # Run against a sample transcript
+npm test
 ```
+
+## Your Task
+
+There are two parts to this challenge:
+
+### Part 1: Fix the Bugs
+
+The test suite has several failing tests across the existing modules. Find the bugs and fix them.
+
+### Part 2: Legacy Scorer Migration
+
+We have a legacy call quality scoring algorithm in `oracle/legacy-scorer.js`. It works, but it's a minified module we can't maintain. We need a clean reimplementation.
+
+Your job: reverse-engineer the algorithm and implement it in `src/reimpl.js`.
+
+Use the probe tool to experiment with the oracle:
+
+```bash
+node tools/probe.js '{"outcome":"connected","durationMs":180000,"repPct":45,"missedSignals":0,"monologues":0,"prospectUtterances":8,"disposition":"CONVERSATION"}'
+```
+
+Try varying one parameter at a time to discover what each component does.
+
+**All tests must pass** — both the bug fixes and the reimplementation.
 
 ## Project Structure
 
 ```
 src/
-  analyzer.js      — Main entry point, orchestrates all three analyses
-  outcome.js       — Call outcome classification (SIP codes, duration, audio)
-  talk-ratio.js    — Talk/listen ratio calculator
-  coaching.js      — Coaching moment detector
-  utils.js         — Shared transcript parsing utilities
+  analyzer.js      — Main orchestrator
+  outcome.js       — Call outcome classification
+  talk-ratio.js    — Talk/listen ratio
+  coaching.js      — Coaching moment detection
+  disposition.js   — CRM disposition mapping
+  scoring.js       — Quality scoring (existing implementation)
+  reimpl.js        — YOUR TASK: reimplementation of the legacy scorer
+  summary.js       — One-line summaries
+  utils.js         — Shared utilities
+oracle/
+  legacy-scorer.js — Legacy scoring algorithm (minified, callable)
+tools/
+  probe.js         — CLI tool to call the legacy oracle
 test/
-  run.js             — Test runner
-  outcome.test.js    — Outcome classifier tests
-  talk-ratio.test.js — Talk ratio tests  
-  coaching.test.js   — Coaching detector tests
-  analyzer.test.js   — Integration tests
+  run.js           — Test runner
+  reimpl.test.js   — Compares your reimpl to the oracle (20 test cases)
+  *.test.js        — Module tests
 data/
-  sample-live.json      — Sample transcript: live person call
-  sample-voicemail.json — Sample transcript: voicemail
-  sample-transfer.json  — Sample transcript: receptionist → live transfer
-  sample-hold.json      — Sample transcript: call with hold / dead air
+  *.json           — Sample call transcripts
 ```
 
-## Transcript Format
+## Rules
 
-Each transcript is a JSON array of utterances:
-
-```json
-[
-  {
-    "speaker": "rep",
-    "text": "Hi, is this John?",
-    "startMs": 1200,
-    "endMs": 2800
-  },
-  {
-    "speaker": "prospect",
-    "text": "Yeah, who's calling?",
-    "startMs": 3000,
-    "endMs": 4200
-  }
-]
-```
-
-Speaker values: `"rep"`, `"prospect"`, `"system"` (IVR/auto-attendant), `"silence"`
+- Fix only `src/` files — do not modify tests or the oracle
+- All tests must pass

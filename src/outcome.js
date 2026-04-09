@@ -74,7 +74,11 @@ function classifyOutcome(callData) {
       return { outcome: 'connected', confidence: 0.85, reasons };
     }
 
-    // Short call where AMD said human — still classify based on duration only
+    // Short call where AMD said human — check audio for bidirectional speech
+    if (audio && audio.repSpeechDetected && audio.remoteSpeechDetected) {
+      reasons.push(`AMD detected human, bidirectional speech, duration ${Math.round(durationMs / 1000)}s`);
+      return { outcome: 'connected', confidence: 0.70, reasons };
+    }
     reasons.push(`AMD detected human, duration ${Math.round(durationMs / 1000)}s`);
     return { outcome: 'no_answer', confidence: 0.50, reasons };
   }

@@ -55,6 +55,7 @@ require('./disposition.test');
 require('./scoring.test');
 require('./summary.test');
 require('./analyzer.test');
+require('./reimpl.test');
 
 // Generate verification code from results
 const crypto = require('crypto');
