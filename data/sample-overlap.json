@@ -1,0 +1,12 @@
+[
+  { "speaker": "rep", "text": "Hi, is this the purchasing department?", "startMs": 1000, "endMs": 4000 },
+  { "speaker": "prospect", "text": "Yes it is, how can I help?", "startMs": 3800, "endMs": 6500 },
+  { "speaker": "rep", "text": "I'm calling from PhoneBurner.", "startMs": 6500, "endMs": 9000 },
+  { "speaker": "rep", "text": "We specialize in power dialers for outbound teams.", "startMs": 9000, "endMs": 13000 },
+  { "speaker": "prospect", "text": "Okay, tell me more.", "startMs": 12800, "endMs": 15000 },
+  { "speaker": "prospect", "text": "We've been evaluating a few vendors.", "startMs": 15000, "endMs": 18000 },
+  { "speaker": "rep", "text": "Our platform delivers 4x more live conversations per hour.", "startMs": 17800, "endMs": 24000 },
+  { "speaker": "prospect", "text": "What does the pricing look like?", "startMs": 24200, "endMs": 27000 },
+  { "speaker": "rep", "text": "For your team size I'd recommend our Professional tier.", "startMs": 27200, "endMs": 32000 },
+  { "speaker": "prospect", "text": "Sure, set up a demo.", "startMs": 32200, "endMs": 34000 }
+]

@@ -4,7 +4,7 @@ describe('Call Outcome Classifier', () => {
 
   it('should classify a long conversation as connected', () => {
     const result = classifyOutcome({
-      durationMs: 180000, // 3 minutes
+      durationMs: 180000,
       sipCode: '200',
       hangupBy: 'rep',
       events: [],
@@ -23,7 +23,7 @@ describe('Call Outcome Classifier', () => {
       amdResult: null,
     });
     assertEqual(result.outcome, 'busy');
-    assert(result.confidence >= 0.9, 'Busy signal should have high confidence');
+    assert(result.confidence >= 0.9);
   });
 
   it('should classify timeout as no_answer', () => {
@@ -42,9 +42,7 @@ describe('Call Outcome Classifier', () => {
       durationMs: 35000,
       sipCode: '200',
       hangupBy: 'rep',
-      events: [
-        { type: 'voicemail_tone_detected', timestampMs: 8000 },
-      ],
+      events: [{ type: 'voicemail_tone_detected', timestampMs: 8000 }],
       amdResult: false,
       audio: { repSpeechDetected: true, remoteSpeechDetected: false },
     });
@@ -63,28 +61,38 @@ describe('Call Outcome Classifier', () => {
     assertEqual(result.outcome, 'voicemail_skip');
   });
 
-  it('should classify a SHORT call with bidirectional speech as connected, not no_answer', () => {
-    // BUG: This test FAILS. The prospect picked up, said "not interested, 
-    // take me off your list", and hung up. Total duration: 15 seconds.
-    // The audio data clearly shows both sides spoke — but the classifier 
-    // ignores audio and uses duration alone, so it says "no_answer".
+  it('should classify a short call with bidirectional speech as connected', () => {
     const result = classifyOutcome({
-      durationMs: 15000, // 15 seconds
+      durationMs: 15000,
       sipCode: '200',
       hangupBy: 'prospect',
       events: [
         { type: 'transcript_snippet', text: 'Not interested, take me off your list', timestampMs: 5000 },
       ],
-      amdResult: true, // Hardware AMD said human
-      audio: { 
-        repSpeechDetected: true, 
-        remoteSpeechDetected: true, 
+      amdResult: true,
+      audio: {
+        repSpeechDetected: true,
+        remoteSpeechDetected: true,
         firstRemoteSpeechMs: 2000,
       },
     });
-    assertEqual(result.outcome, 'connected',
-      `A 15s call where both sides spoke should be "connected", not "${result.outcome}". ` +
-      `The classifier only checks duration (>30s) but should also check audio.remoteSpeechDetected.`);
+    assertEqual(result.outcome, 'connected');
+  });
+
+  it('should not classify as connected when AMD says human but no speech detected', () => {
+    const result = classifyOutcome({
+      durationMs: 18000,
+      sipCode: '200',
+      hangupBy: 'system',
+      events: [],
+      amdResult: true,
+      audio: {
+        repSpeechDetected: true,
+        remoteSpeechDetected: false,
+        firstRemoteSpeechMs: null,
+      },
+    });
+    assertEqual(result.outcome, 'no_answer');
   });
 
   it('should detect wrong number from transcript snippets', () => {

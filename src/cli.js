@@ -13,30 +13,24 @@ if (!file) {
 const transcript = JSON.parse(fs.readFileSync(path.resolve(file), 'utf8'));
 const result = analyzeCall(transcript);
 
-console.log('\n═══════════════════════════════════════');
+console.log('\n-----------------------------------');
 console.log('  CALL ANALYSIS REPORT');
-console.log('═══════════════════════════════════════\n');
+console.log('-----------------------------------\n');
 
-// AMD
-const amdIcon = result.amd.classification === 'voicemail' ? '📫' : '👤';
-console.log(`${amdIcon} AMD: ${result.amd.classification.toUpperCase()} (${Math.round(result.amd.confidence * 100)}% confidence)`);
-result.amd.signals.forEach(s => {
-  console.log(`   ${s.score > 0 ? '🔴' : '🟢'} ${s.heuristic}: ${s.detail}`);
-});
+if (result.outcome) {
+  console.log(`Outcome: ${result.outcome.outcome} (${Math.round(result.outcome.confidence * 100)}%)`);
+}
 
-// Talk Ratio
-console.log(`\n🎙️  Talk Ratio: Rep ${result.talkRatio.repPct}% / Prospect ${result.talkRatio.prospectPct}% / Silence ${result.talkRatio.silencePct}%`);
-console.log(`   Rating: ${result.talkRatio.rating}`);
-result.talkRatio.flags.forEach(f => {
-  console.log(`   ⚠️  ${f.message}`);
-});
+console.log(`Talk Ratio: Rep ${result.talkRatio.repPct}% / Prospect ${result.talkRatio.prospectPct}% / Silence ${result.talkRatio.silencePct}%`);
+console.log(`Rating: ${result.talkRatio.rating}`);
 
-// Coaching
-console.log(`\n🏋️  Coaching: ${result.coaching.summary.totalMoments} moments found`);
+console.log(`Coaching: ${result.coaching.summary.totalMoments} moments`);
 result.coaching.moments.forEach(m => {
-  const icon = m.severity === 'critical' ? '🔴' : m.severity === 'warning' ? '🟡' : 'ℹ️';
-  console.log(`   ${icon} [${m.type}] ${m.message}`);
-  console.log(`      💡 ${m.suggestion}`);
+  console.log(`  [${m.severity}] ${m.message}`);
 });
 
-console.log(`\n── Meta: ${result.meta.utteranceCount} utterances, ${Math.round(result.meta.durationMs / 1000)}s, speakers: ${result.meta.speakers.join(', ')} ──\n`);
+if (result.disposition) console.log(`Disposition: ${result.disposition}`);
+if (result.score) console.log(`Score: ${result.score.total}/100`);
+if (result.summary) console.log(`Summary: ${result.summary}`);
+
+console.log(`\nMeta: ${result.meta.utteranceCount} utterances, ${Math.round(result.meta.durationMs / 1000)}s, speakers: ${result.meta.speakers.join(', ')}\n`);

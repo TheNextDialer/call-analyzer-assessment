@@ -1,18 +1,25 @@
 /**
  * Talk Ratio Analysis
- * 
+ *
  * Calculates how much the sales rep talked vs. listened during a call.
  * Top-performing reps maintain roughly a 40% talk / 60% listen ratio.
- * 
- * Returns the ratio plus flags if the rep dominated the conversation.
+ *
+ * The ratio is calculated over active speech time only (excluding silence
+ * and hold periods). Silence percentage is reported separately against
+ * the total call duration for context.
  */
 
 const { getSpeakerDuration, getCallDuration } = require('./utils');
 
 /**
  * Analyze the talk-to-listen ratio for a call.
+ *
+ * repPct and prospectPct are calculated as a proportion of speech-only
+ * time. silencePct is reported as a proportion of total call wall-clock
+ * duration so managers can see how much dead air there was.
+ *
  * @param {Array} transcript - Array of utterance objects
- * @returns {{ repPct: number, prospectPct: number, silencePct: number, flags: Array }}
+ * @returns {{ repPct: number, prospectPct: number, silencePct: number, rating: string, flags: Array }}
  */
 function analyzeTalkRatio(transcript) {
   if (transcript.length === 0) {
@@ -24,15 +31,7 @@ function analyzeTalkRatio(transcript) {
   const systemDuration = getSpeakerDuration(transcript, 'system');
   const silenceDuration = getSpeakerDuration(transcript, 'silence');
 
-  // BUG IS HERE: We divide by total call duration (wall-clock time from 
-  // first utterance to last utterance). This INCLUDES silence and hold time.
-  // So if there's a 2-minute hold in a 5-minute call where the rep talked 
-  // for 2.5 minutes, the math says 2.5/5 = 50% rep talk time.
-  // But the ACTUAL conversation was only 3 minutes (5 - 2 min hold),
-  // so the real ratio should be 2.5/3 = 83%.
-  // 
-  // The correct denominator should be (repDuration + prospectDuration) — 
-  // i.e., total SPEECH time, excluding silence and system/hold.
+  // Use total call duration for all percentage calculations
   const totalDuration = getCallDuration(transcript);
 
   const repPct = totalDuration > 0 ? Math.round((repDuration / totalDuration) * 100) : 0;
@@ -47,14 +46,13 @@ function analyzeTalkRatio(transcript) {
   else if (repPct >= 20) rating = 'prospect_heavy';
   else rating = 'prospect_dominated';
 
-  // Generate coaching flags
   const flags = [];
 
   if (repPct > 65) {
     flags.push({
       type: 'talk_ratio',
       severity: 'warning',
-      message: `Rep talked ${repPct}% of the time. Aim for 40% or less.`,
+      message: `Rep talked ${repPct}% of the time.`,
     });
   }
 
@@ -62,7 +60,7 @@ function analyzeTalkRatio(transcript) {
     flags.push({
       type: 'talk_ratio',
       severity: 'critical',
-      message: `Rep talked ${repPct}% — this was essentially a monologue, not a conversation.`,
+      message: `Rep talked ${repPct}% of the call.`,
     });
   }
 

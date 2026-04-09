@@ -16,7 +16,7 @@ function getSpeakerDuration(transcript, speaker) {
 
 /**
  * Returns the total call duration from first utterance start to last utterance end.
- * @param {Array} transcript 
+ * @param {Array} transcript
  * @returns {number} Total call duration in milliseconds
  */
 function getCallDuration(transcript) {
@@ -24,6 +24,35 @@ function getCallDuration(transcript) {
   const start = transcript[0].startMs;
   const end = transcript[transcript.length - 1].endMs;
   return end - start;
+}
+
+/**
+ * Merges overlapping or adjacent utterances to clean up transcript data.
+ * When two utterances overlap in time, they get combined into a single
+ * utterance with the union of their time ranges and concatenated text.
+ *
+ * @param {Array} transcript - Array of utterance objects
+ * @returns {Array} Cleaned transcript with overlaps merged
+ */
+function mergeOverlappingUtterances(transcript) {
+  if (transcript.length === 0) return [];
+
+  const sorted = [...transcript].sort((a, b) => a.startMs - b.startMs);
+  const merged = [{ ...sorted[0] }];
+
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = merged[merged.length - 1];
+    // Merge if the current utterance overlaps or is adjacent to the previous one.
+    // Two utterances overlap when the current one starts before the previous ends.
+    if (sorted[i].startMs <= prev.endMs) {
+      prev.endMs = Math.max(prev.endMs, sorted[i].endMs);
+      prev.text = prev.text ? prev.text + ' ' + sorted[i].text : sorted[i].text;
+    } else {
+      merged.push({ ...sorted[i] });
+    }
+  }
+
+  return merged;
 }
 
 /**
@@ -59,7 +88,6 @@ function groupIntoTurns(transcript) {
 
 /**
  * Extracts just the "remote" side of the conversation (everything that isn't the rep).
- * Includes prospect, system, silence, etc.
  * @param {Array} transcript
  * @returns {Array} Filtered transcript
  */
@@ -73,17 +101,13 @@ function getRemoteSide(transcript) {
  * @returns {boolean}
  */
 function containsQuestion(text) {
-  // Check for question marks
   if (text.includes('?')) return true;
-
-  // Check for question-starting words
   const questionStarts = /^(who|what|when|where|why|how|is|are|was|were|do|does|did|can|could|would|should|will|have|has|had)\b/i;
   return questionStarts.test(text.trim());
 }
 
 /**
  * Known buying signal phrases that indicate prospect interest.
- * Used by the coaching detector.
  */
 const BUYING_SIGNALS = [
   'how much',
@@ -125,12 +149,24 @@ function detectBuyingSignal(text) {
   return { found: false, signal: null };
 }
 
+/**
+ * Counts the number of utterances from a given speaker.
+ * @param {Array} transcript
+ * @param {string} speaker
+ * @returns {number}
+ */
+function countSpeakerUtterances(transcript, speaker) {
+  return transcript.filter(u => u.speaker === speaker).length;
+}
+
 module.exports = {
   getSpeakerDuration,
   getCallDuration,
+  mergeOverlappingUtterances,
   groupIntoTurns,
   getRemoteSide,
   containsQuestion,
   detectBuyingSignal,
+  countSpeakerUtterances,
   BUYING_SIGNALS,
 };

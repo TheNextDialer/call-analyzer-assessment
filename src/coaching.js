@@ -1,11 +1,11 @@
 /**
  * Coaching Moment Detector
- * 
+ *
  * Analyzes a sales call transcript to identify specific coachable moments:
- * 
- * 1. Monologue detection — rep talked too long without asking a question
- * 2. Buying signal detection — prospect showed interest that rep didn't follow up on
- * 3. Interruption detection — rep cut off the prospect mid-sentence
+ *
+ * 1. Monologue detection - rep talked too long without asking a question
+ * 2. Buying signal detection - prospect showed interest that rep didn't follow up on
+ * 3. Interruption detection - rep cut off the prospect mid-sentence
  */
 
 const { groupIntoTurns, containsQuestion, detectBuyingSignal } = require('./utils');
@@ -19,8 +19,7 @@ function detectCoachingMoments(transcript) {
   const moments = [];
   const turns = groupIntoTurns(transcript);
 
-  // ── 1. Monologue Detection ──
-  // Flag any rep turn longer than 45 seconds without asking a question
+  // Monologue detection: flag any rep turn > 45s without a question
   for (const turn of turns) {
     if (turn.speaker !== 'rep') continue;
     const durationSec = (turn.endMs - turn.startMs) / 1000;
@@ -31,45 +30,36 @@ function detectCoachingMoments(transcript) {
         timestamp: turn.startMs,
         durationSec: Math.round(durationSec),
         message: `Rep spoke for ${Math.round(durationSec)}s without asking a question.`,
-        suggestion: 'Break up long pitches with check-in questions like "Does that make sense?" or "What are your thoughts on that?"',
+        suggestion: 'Break up long pitches with check-in questions.',
       });
     }
   }
 
-  // ── 2. Buying Signal Detection ──
-  // Look for prospect utterances that contain buying signals,
-  // then check if the rep followed up on them
+  // Buying signal detection: find prospect utterances with buying signals
+  // and check if the rep acknowledged them
   for (let i = 0; i < turns.length; i++) {
     const turn = turns[i];
     if (turn.speaker !== 'prospect') continue;
 
-    // BUG IS HERE: If the prospect's utterance contains a question,
-    // we skip it entirely and move to the next turn.
-    // The intent was probably to separate "prospect asking questions" 
-    // from "prospect showing buying signals" — but many buying signals 
-    // ARE questions: "What would next steps look like?", "How much does 
-    // it cost?", "Can you send me a demo?"
-    // This causes us to miss the most important buying signals.
+    // Skip questions — only check statements for buying signals
     if (containsQuestion(turn.text)) {
-      continue;  // Skip questions — check for buying signals in statements only
+      continue;
     }
 
     const { found, signal } = detectBuyingSignal(turn.text);
     if (!found) continue;
 
-    // Check if the rep followed up within the next 2 turns
     const nextRepTurn = turns.slice(i + 1, i + 3).find(t => t.speaker === 'rep');
-    
+
     if (nextRepTurn) {
-      // Did the rep acknowledge or build on the buying signal?
       const repResponse = nextRepTurn.text.toLowerCase();
-      const acknowledged = 
+      const acknowledged =
         repResponse.includes(signal) ||
         repResponse.includes('great') ||
         repResponse.includes('absolutely') ||
         repResponse.includes('glad') ||
         repResponse.includes('perfect') ||
-        containsQuestion(nextRepTurn.text); // Rep asked a follow-up question
+        containsQuestion(nextRepTurn.text);
 
       if (!acknowledged) {
         moments.push({
@@ -79,34 +69,32 @@ function detectCoachingMoments(transcript) {
           signal: signal,
           prospectSaid: turn.text,
           message: `Prospect showed buying interest ("${signal}") but rep didn't follow up.`,
-          suggestion: `When a prospect mentions "${signal}", pause your pitch and explore their interest. Ask "Tell me more about what you're looking for" or confirm next steps.`,
+          suggestion: `When a prospect mentions "${signal}", explore their interest.`,
         });
       }
     }
   }
 
-  // ── 3. Interruption Detection ──
-  // Flag when the rep starts talking before the prospect finishes
+  // Interruption detection: rep starts before prospect finishes
   for (let i = 0; i < transcript.length - 1; i++) {
     const current = transcript[i];
     const next = transcript[i + 1];
 
     if (current.speaker === 'prospect' && next.speaker === 'rep') {
       const overlap = current.endMs - next.startMs;
-      if (overlap > 500) { // More than 500ms overlap = likely interruption
+      if (overlap > 500) {
         moments.push({
           type: 'interruption',
           severity: overlap > 2000 ? 'warning' : 'info',
           timestamp: next.startMs,
           overlapMs: overlap,
           message: `Rep interrupted prospect (${Math.round(overlap / 1000 * 10) / 10}s overlap).`,
-          suggestion: 'Practice the "2-second rule" — wait 2 full seconds after the prospect stops before responding.',
+          suggestion: 'Wait 2 seconds after the prospect stops before responding.',
         });
       }
     }
   }
 
-  // ── Summary ──
   const summary = {
     totalMoments: moments.length,
     critical: moments.filter(m => m.severity === 'critical').length,

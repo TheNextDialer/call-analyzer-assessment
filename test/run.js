@@ -1,5 +1,5 @@
 /**
- * Simple test runner — no dependencies needed.
+ * Simple test runner - no dependencies needed.
  */
 
 const results = { passed: 0, failed: 0, errors: [] };
@@ -13,12 +13,12 @@ function it(name, fn) {
   try {
     fn();
     results.passed++;
-    console.log(`    ✓ ${name}`);
+    console.log(`    \u2713 ${name}`);
   } catch (err) {
     results.failed++;
     results.errors.push({ test: name, error: err.message });
-    console.log(`    ✗ ${name}`);
-    console.log(`      → ${err.message}`);
+    console.log(`    \u2717 ${name}`);
+    console.log(`      \u2192 ${err.message}`);
   }
 }
 
@@ -38,21 +38,22 @@ function assertInRange(value, min, max, message) {
   }
 }
 
-// Make helpers available globally
 global.describe = describe;
 global.it = it;
 global.assert = assert;
 global.assertEqual = assertEqual;
 global.assertInRange = assertInRange;
 
-// Run all test files
-console.log('\n══════════════════════════════════');
-console.log('  Call Analyzer — Test Suite');
-console.log('══════════════════════════════════');
+console.log('\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550');
+console.log('  Call Analyzer \u2014 Test Suite');
+console.log('\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550');
 
 require('./outcome.test');
 require('./talk-ratio.test');
 require('./coaching.test');
+require('./disposition.test');
+require('./scoring.test');
+require('./summary.test');
 require('./analyzer.test');
 
 // Generate verification code from results
@@ -60,7 +61,7 @@ const crypto = require('crypto');
 const verifyInput = `ca-${results.passed}-${results.failed}-phoneburner`;
 const verifyCode = crypto.createHash('sha256').update(verifyInput).digest('hex').slice(0, 8);
 
-console.log('\n──────────────────────────────────');
+console.log('\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500');
 console.log(`  Results: ${results.passed} passed, ${results.failed} failed`);
 console.log(`  Verification: ${verifyCode}`);
 if (results.errors.length > 0) {
@@ -70,6 +71,6 @@ if (results.errors.length > 0) {
     console.log(`       ${e.error}`);
   });
 }
-console.log('──────────────────────────────────\n');
+console.log('\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n');
 
 process.exit(results.failed > 0 ? 1 : 0);

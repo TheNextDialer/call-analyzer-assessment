@@ -5,7 +5,7 @@
   { "speaker": "prospect", "text": "I've got about two minutes, what's this about?", "startMs": 9500, "endMs": 11800 },
   { "speaker": "rep", "text": "Perfect. I noticed your team is using a manual dialer right now. Most teams like yours see a 3x increase in conversations when they switch to a power dialer. Would it be worth a 15-minute demo to see how it works?", "startMs": 12000, "endMs": 22000 },
   { "speaker": "prospect", "text": "Maybe. What does it cost?", "startMs": 22300, "endMs": 24000 },
-  { "speaker": "rep", "text": "It starts at $149 per seat per month. But honestly the ROI conversation is more interesting — most teams pay for it in the first week with the extra meetings they book. Can I send you a quick case study?", "startMs": 24200, "endMs": 33000 },
+  { "speaker": "rep", "text": "It starts at $149 per seat per month. But honestly the ROI conversation is more interesting - most teams pay for it in the first week with the extra meetings they book. Can I send you a quick case study?", "startMs": 24200, "endMs": 33000 },
   { "speaker": "prospect", "text": "Sure, send it over. My email is john at acme dot com.", "startMs": 33200, "endMs": 36500 },
   { "speaker": "rep", "text": "Great, I'll send that right now. And I'll include a link to book a demo whenever you're ready. Thanks for your time, John.", "startMs": 36800, "endMs": 43000 },
   { "speaker": "prospect", "text": "Sounds good, thanks.", "startMs": 43200, "endMs": 44800 }
