@@ -55,8 +55,14 @@ require('./talk-ratio.test');
 require('./coaching.test');
 require('./analyzer.test');
 
+// Generate verification code from results
+const crypto = require('crypto');
+const verifyInput = `ca-${results.passed}-${results.failed}-phoneburner`;
+const verifyCode = crypto.createHash('sha256').update(verifyInput).digest('hex').slice(0, 8);
+
 console.log('\n──────────────────────────────────');
 console.log(`  Results: ${results.passed} passed, ${results.failed} failed`);
+console.log(`  Verification: ${verifyCode}`);
 if (results.errors.length > 0) {
   console.log('\n  Failures:');
   results.errors.forEach((e, i) => {
