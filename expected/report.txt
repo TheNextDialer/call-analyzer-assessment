@@ -1,0 +1,39 @@
+═══════════════════════════════════════════════════
+  CALL ANALYSIS REPORT
+  Period: 2025-01-15 09:15 — 2025-01-15 16:55
+  Total Calls: 8  |  Connected: 5  |  VM: 2  |  Other: 1
+═══════════════════════════════════════════════════
+
+CALL DETAILS
+───────────────────────────────────────────────────
+  #  Outcome        Duration  Rep%  Signals  Score
+  1  connected        3m 05s   45%      0/3    100
+  2  connected        1m 30s   62%      1/2     70
+  3  voicemail        0m 35s     —        —     50
+  4  connected        5m 12s   38%      2/4     65
+  5  no_answer        0m 25s     —        —     50
+  6  connected        2m 48s   51%      0/2    100
+  7  voicemail        0m 22s     —        —     50
+  8  connected        4m 01s   44%      1/3     90
+
+AGGREGATE METRICS (Connected Calls Only)
+───────────────────────────────────────────────────
+  Avg Duration:     3m 19s
+  Avg Rep Talk:     48.0%
+  Avg Score:        85.0
+  Median Score:     90
+  P90 Score:        100
+  Total Signals:    4 missed / 14 total
+
+TOP PERFORMERS
+───────────────────────────────────────────────────
+  1. Call #1  — Score: 100  (rep: 45%, 0 missed, CONVERSATION)
+  2. Call #6  — Score: 100  (rep: 51%, 0 missed, CONVERSATION)
+  3. Call #8  — Score: 90   (rep: 44%, 1 missed, CONVERSATION)
+
+COACHING PRIORITIES
+───────────────────────────────────────────────────
+  Most missed signal: "pricing" (appeared in 3 calls)
+  Monologues: 1 call had rep monologues > 45s
+  Action: Focus training on pricing objection handling
+═══════════════════════════════════════════════════

@@ -1,13 +1,9 @@
 {
-  "name": "call-analyzer",
+  "name": "call-report-challenge",
   "version": "1.0.0",
-  "description": "Sales call transcript analyzer — AMD, talk ratio, and coaching detection",
-  "main": "src/analyzer.js",
+  "description": "Build a call analysis report generator",
   "scripts": {
-    "test": "node test/run.js",
-    "probe": "node tools/probe.js",
-    "analyze": "node src/cli.js data/sample-live.json"
+    "test": "node test/run.js"
   },
-  "keywords": ["sales", "telephony", "coaching", "amd"],
   "license": "UNLICENSED"
 }

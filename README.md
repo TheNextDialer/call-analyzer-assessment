@@ -1,73 +1,45 @@
-# PhoneBurner Call Analyzer
+# Call Report Generator Challenge
 
-A Node.js service that analyzes sales call data. Used internally by PhoneBurner's coaching and analytics team.
-
-## What It Does
-
-- **Call Outcome Classification** — Classifies calls as connected, voicemail, no answer, busy, or wrong number
-- **Talk Ratio Analysis** — Measures rep vs. prospect talk time
-- **Coaching Detector** — Identifies monologues, missed buying signals, and interruptions
-- **CRM Disposition Mapping** — Maps outcomes to standardized CRM codes
-- **Call Quality Scoring** — Composite quality score (0-100)
-- **Summary Generator** — One-line call summaries for activity feeds
+Build a report generator that produces output matching `expected/report.txt` exactly.
 
 ## Quick Start
 
 ```bash
-npm install
 npm test
 ```
 
+You'll see 2 failing tests. Your job: implement `src/report-generator.js` so its output matches the expected reports character-for-character.
+
 ## Your Task
 
-There are two parts to this challenge:
+The `generateReport(calls)` function receives an array of call records and must return a formatted text report. Look at `expected/report.txt` to see the exact format.
 
-### Part 1: Fix the Bugs
+The test compares your output against the expected file and shows you the lines that differ. Use this feedback to refine your implementation iteratively.
 
-The test suite has several failing tests across the existing modules. Find the bugs and fix them.
+## Data Format
 
-### Part 2: Legacy Scorer Migration
+Each call record in `data/calls.json` has:
 
-We have a legacy call quality scoring algorithm in `oracle/legacy-scorer.js`. It works, but it's a minified module we can't maintain. We need a clean reimplementation.
-
-Your job: reverse-engineer the algorithm and implement it in `src/reimpl.js`.
-
-Use the probe tool to experiment with the oracle:
-
-```bash
-node tools/probe.js '{"outcome":"connected","durationMs":180000,"repPct":45,"missedSignals":0,"monologues":0,"prospectUtterances":8,"disposition":"CONVERSATION"}'
+```json
+{
+  "callId": 1,
+  "timestamp": "2025-01-15T09:15:00Z",
+  "outcome": "connected",
+  "durationMs": 185000,
+  "repPct": 45,
+  "prospectUtterances": 8,
+  "totalSignals": 3,
+  "missedSignals": 0,
+  "missedSignalKeywords": [],
+  "monologues": 0,
+  "disposition": "CONVERSATION"
+}
 ```
 
-Try varying one parameter at a time to discover what each component does.
-
-**All tests must pass** — both the bug fixes and the reimplementation.
-
-## Project Structure
-
-```
-src/
-  analyzer.js      — Main orchestrator
-  outcome.js       — Call outcome classification
-  talk-ratio.js    — Talk/listen ratio
-  coaching.js      — Coaching moment detection
-  disposition.js   — CRM disposition mapping
-  scoring.js       — Quality scoring (existing implementation)
-  reimpl.js        — YOUR TASK: reimplementation of the legacy scorer
-  summary.js       — One-line summaries
-  utils.js         — Shared utilities
-oracle/
-  legacy-scorer.js — Legacy scoring algorithm (minified, callable)
-tools/
-  probe.js         — CLI tool to call the legacy oracle
-test/
-  run.js           — Test runner
-  reimpl.test.js   — Compares your reimpl to the oracle (20 test cases)
-  *.test.js        — Module tests
-data/
-  *.json           — Sample call transcripts
-```
+Non-connected calls (voicemail, no_answer) have `null` for `repPct`, `totalSignals`, `missedSignals`, and `missedSignalKeywords`.
 
 ## Rules
 
-- Fix only `src/` files — do not modify tests or the oracle
+- Edit only `src/report-generator.js`
+- Do not modify tests or expected output files
 - All tests must pass
