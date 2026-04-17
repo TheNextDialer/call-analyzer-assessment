@@ -16,6 +16,22 @@ The `generateReport(calls)` function receives an array of call records and must 
 
 The test compares your output against the expected file and shows you the lines that differ. Use this feedback to refine your implementation iteratively.
 
+## Scoring Algorithm
+
+Non-connected calls (voicemail, no_answer) always score **50**.
+
+Connected calls use this formula:
+
+```
+score = 100
+      - (missedSignals * 10)      // -10 per missed buying signal
+      - (monologues * 10)         // -10 per rep monologue
+      - (repPct > 60 ? 20 : 0)    // -20 if rep dominated conversation
+      - (repPct < 40 ? 5 : 0)     // -5 if rep didn't talk enough
+```
+
+Clamp the final score between 0 and 100.
+
 ## Data Format
 
 Each call record in `data/calls.json` has:

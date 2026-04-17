@@ -4,6 +4,31 @@ const path = require('path');
 
 const allCalls = require('../data/calls.json');
 
+function diffReports(actual, expected, maxShow) {
+  const actualLines = actual.split('\n');
+  const expectedLines = expected.split('\n');
+  const totalLines = Math.max(actualLines.length, expectedLines.length);
+  const diffs = [];
+  for (let i = 0; i < totalLines; i++) {
+    if (actualLines[i] !== expectedLines[i]) {
+      diffs.push({ line: i + 1, expected: expectedLines[i] || '', got: actualLines[i] || '' });
+    }
+  }
+  const shown = diffs.slice(0, maxShow);
+  shown.forEach(d => {
+    console.log(`      Line ${d.line}:`);
+    console.log(`        expected: "${d.expected.replace(/ /g, '·')}"`);
+    console.log(`        got:      "${d.got.replace(/ /g, '·')}"`);
+  });
+  if (diffs.length > maxShow) {
+    console.log(`      ... and ${diffs.length - maxShow} more differences`);
+  }
+  if (actualLines.length !== expectedLines.length) {
+    console.log(`      (expected ${expectedLines.length} lines, got ${actualLines.length})`);
+  }
+  return diffs.length;
+}
+
 describe('Report Generator', () => {
   it('should generate a report matching the expected output (all calls)', () => {
     const expected = fs.readFileSync(
@@ -11,31 +36,9 @@ describe('Report Generator', () => {
       'utf-8'
     );
     const actual = generateReport(allCalls);
-
     if (actual !== expected) {
-      const actualLines = actual.split('\n');
-      const expectedLines = expected.split('\n');
-      let diffs = 0;
-      for (
-        let i = 0;
-        i < Math.max(actualLines.length, expectedLines.length);
-        i++
-      ) {
-        if (actualLines[i] !== expectedLines[i] && diffs < 5) {
-          console.log(`      Line ${i + 1}:`);
-          console.log(`        expected: "${(expectedLines[i] || '').replace(/ /g, '·')}"`);
-          console.log(`        got:      "${(actualLines[i] || '').replace(/ /g, '·')}"`);
-          diffs++;
-        }
-      }
-      if (diffs === 0) {
-        console.log(
-          `      Length mismatch: expected ${expectedLines.length} lines, got ${actualLines.length}`
-        );
-      }
-      throw new Error(
-        `Report does not match expected output (${diffs}+ line differences)`
-      );
+      const count = diffReports(actual, expected, 10);
+      throw new Error(`Report does not match (${count} line differences)`);
     }
   });
 
@@ -46,26 +49,9 @@ describe('Report Generator', () => {
     );
     // Use just call #2 (the second call in the data)
     const actual = generateReport([allCalls[1]]);
-
     if (actual !== expected) {
-      const actualLines = actual.split('\n');
-      const expectedLines = expected.split('\n');
-      let diffs = 0;
-      for (
-        let i = 0;
-        i < Math.max(actualLines.length, expectedLines.length);
-        i++
-      ) {
-        if (actualLines[i] !== expectedLines[i] && diffs < 3) {
-          console.log(`      Line ${i + 1}:`);
-          console.log(`        expected: "${(expectedLines[i] || '').replace(/ /g, '·')}"`);
-          console.log(`        got:      "${(actualLines[i] || '').replace(/ /g, '·')}"`);
-          diffs++;
-        }
-      }
-      throw new Error(
-        `Single-call report does not match (${diffs}+ differences)`
-      );
+      const count = diffReports(actual, expected, 8);
+      throw new Error(`Single-call report does not match (${count} differences)`);
     }
   });
 });
