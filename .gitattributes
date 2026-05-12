@@ -1,0 +1,10 @@
+# Force LF on all text files so the test's line-by-line comparison against
+# expected/ output works identically on Windows, macOS, and Linux. Without
+# this, a Windows clone with default core.autocrlf=true ends up with CRLF in
+# the expected files, and the test fails on every line because of phantom
+# carriage returns.
+* text=auto eol=lf
+*.txt text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
