@@ -5,8 +5,12 @@ Build a report generator that produces output matching `expected/report.txt` exa
 ## Quick Start
 
 ```bash
+export ASSESSMENT_API=<from the assessment app>
+export ASSESSMENT_TOKEN=<from the assessment app>
 npm test
 ```
+
+The two `export` lines bind the run to your assessment session — the runner asks the server for a verification code at the end of the test output, and you copy/paste the whole thing into the submission form. If you run `npm test` without those env vars, you'll still see test results, but the verification line will be skipped and your submission won't pass auto-grade.
 
 You'll see 2 failing tests. Your job: implement `src/report-generator.js` so its output matches the expected reports character-for-character.
 
